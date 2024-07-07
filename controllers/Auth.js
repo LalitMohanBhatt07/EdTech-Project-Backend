@@ -8,6 +8,9 @@ const OTP=require("../models/OTP")
 const optGenerator=require("otp-generator")
 const bcrypt=require("bcrypt")
 const Profile=require("../models/Profile")
+const jwt=require('jsonwebtoken')
+require('dotenv').config()
+
 
 //! Send Otp for Sign in
 exports.sendOTP=async(req,res)=>{
@@ -153,6 +156,78 @@ exports.signUp=async(req,res)=>{
         res.status(500).json({
             success:false,
             message:"user cannot be registered , Please Try again"
+        })
+    }
+}
+
+//Login
+exports.login=async(req,res)=>{
+    try{
+        // jab bhi koi user login karta h to hum jwt token generate karte h or osko response ke sath send kar dete h
+
+        //get data from request body
+        const {email,password}=req.body;
+
+        //validate data
+        if(!email || !password){
+            return res.status(400).json({
+                success:false,
+                message:"All Fields are required, Please try again"
+            })
+        }
+
+        //user check exist or not
+        const user=await User.findOne({email}).populate("additionalDetails")
+        if(!user){
+            return res.status(401).json({
+                success:false,
+                message:"User is not registered, Please SignUp first"
+            })
+        }
+
+
+        //generate jwt token after password matching
+        if(await bcrypt.compare(password,user.password)){
+
+            const payload={
+                email:user.email,
+                id:user._id,
+                role:user.role
+            }
+
+            const token=jwt.sign(payload,process.env.JWT_SECRET,{
+                expiresIn:"2h"
+        })
+        user.token=token
+        user.password=undefined;
+
+        //create cookie and send response
+        const options = {
+            expires:new Date(Date.now() + 3*24*69*1000), // in milisecond
+            httpOnly:true
+        }
+
+        res.cookie("token",token,options).status (200).json({
+            success:true,
+            token,
+            user,
+            message:"Logged in Successfully"
+        }) // first arguemetn is cookie ka naam, second arguement is cookie ki value and third arguemtn is options
+        }
+
+        else{
+            return res.status(401).json({
+                success:false,
+                message:"Password does not match"
+            })
+        }
+        
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({
+            success:false,
+            message:'Login Failure, Please try again'
         })
     }
 }
