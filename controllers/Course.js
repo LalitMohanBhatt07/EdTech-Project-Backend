@@ -97,21 +97,21 @@ exports.createCourse=async(req,res)=>{
 //getAllCourses Handler Function
 
 exports.getAllCourses=async(req,res)=>{
-    // try{
-    //     const allCourses=await Course.find({})
+    try{
+        const allCourses=await Course.find({})
 
-    //     return res.status(200).json({
-    //         success:true,
-    //         message:"Data for all courses fetched successfully",
-    //         data:allCourses
-    //     })
-    // }
-    // catch(err){
-    //     console.log(err)
-    //     res.status(500).json({
-    //         success:false,
-    //         message:"Cannot fetch all Courses",
-    //         error:err.message
-    //     })
-    // }
+        return res.status(200).json({
+            success:true,
+            message:"Data for all courses fetched successfully",
+            data:allCourses
+        })
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({
+            success:false,
+            message:"Cannot fetch all Courses",
+            error:err.message
+        })
+    }
 }
