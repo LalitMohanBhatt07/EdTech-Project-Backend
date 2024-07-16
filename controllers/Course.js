@@ -1,5 +1,5 @@
 const Course=require("../models/Course")
-const Tags=require("../models/Tags")
+const Category=require("../models/Category")
 const User = require("../models/User")
 const user=require("../models/User")
 const {uploadImageToClodinary}=require("../utils/imageUploder")
@@ -9,13 +9,13 @@ exports.createCourse=async(req,res)=>{
      try{
         //payload ke andar id daal rakhi h auth middleware ke andar thus we can get id from req.body
         //dusra tarika yeh hi ki hum db call karke id le sakte h
-        const {courseName,courseDescription,whatYouWillLearn,price,tag}=req.body
+        const {courseName,courseDescription,whatYouWillLearn,price,category}=req.body
 
         //get thumbnail
         const thumbnail=req.files.thumbnailImage
 
         //validation
-        if(!courseName || !courseDescription || !whatYouWillLearn ||!price ||!tag ||!thumbnail){
+        if(!courseName || !courseDescription || !whatYouWillLearn ||!price ||!category ||!thumbnail){
             res.status(400).json({
                 success:false,
                 message:'All Fields are mandatory'
@@ -34,13 +34,13 @@ exports.createCourse=async(req,res)=>{
             })
         }
 
-        //check given tag is valid or not
-        // req ki body se jo tag milega vo course.js model mein object reference form mein h to hame id milegi
-        const tagDetails=Tags.findById(tag)// ye tag id hoge 
-        if(!tagDetails){
+        //check given category is valid or not
+        // req ki body se jo category milega vo course.js model mein object reference form mein h to hame id milegi
+        const categoryDetails=Category.findById(category)// ye category id hoge 
+        if(!categoryDetails){
             res.status(404).json({
                 success:false,
-                message:"Tag Details not found"
+                message:"Category Details not found"
             })
         }
 
@@ -52,7 +52,7 @@ exports.createCourse=async(req,res)=>{
             courseName,courseDescription,instructor:instructorDetails._id,
             whatYouWillLearn,
             price,
-            tag:tagDetails._id,
+            category:categoryDetails._id,
             thumbnail:thumbnailImage.secure_url
         })
 
@@ -64,9 +64,9 @@ exports.createCourse=async(req,res)=>{
         },
     {new:true})
 
-    //update the tag Schema
-    await Tags.findByIdAndUpdate({
-        _id:tagDetails._id
+    //update the category Schema
+    await Category.findByIdAndUpdate({
+        _id:categoryDetails._id
     },
     {
         $push:{

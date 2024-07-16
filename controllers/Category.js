@@ -1,8 +1,9 @@
-const Tags=require("../models/Tags")
 
-//create tag ka handler function
+//create categories ka handler function
 
-exports.createTag=async()=>{
+const Category = require("../models/Category")
+
+exports.createCategory=async(req,res)=>{
     try{
         //fetch data
         const {name,description}=req.body
@@ -17,17 +18,17 @@ exports.createTag=async()=>{
         }
 
         //create entry in DB
-        const tagDetails=await Tags.create({
+        const categoryDetails=await Category.create({
             name:name,
             description:description
         })
 
-        console.log(tagDetails)
+        console.log(categoryDetails)
 
         //return 
         return res.status(200).json({
             success:true,
-            message:"Tag created Successfully"
+            message:"Category created Successfully"
         })
     }
     catch(err){
@@ -39,14 +40,14 @@ exports.createTag=async()=>{
 }
 
 
-//get all tags handler 
-exports.showAllTags=async(req,res)=>{
+//get all categories handler 
+exports.showAllCategories=async(req,res)=>{
     try{
-        const allTags=await Tags.find({},{name:true,description:true})// iska matlab ye hota h ki sare data show karo par make sure karna ki jo bhi data hoga osme name,description compulsarily ho.
+        const allCategory=await Category.find({},{name:true,description:true})// iska matlab ye hota h ki sare data show karo par make sure karna ki jo bhi data hoga osme name,description compulsarily ho.
 
         res.status(200).json({
             success:true,
-            message:"All Tags returned Successfullt",allTags
+            message:"All Categories returned Successfullt",allCategory
         })
     }
     catch(err){
