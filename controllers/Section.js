@@ -43,3 +43,40 @@ exports.createSection=async(req,res)=>{
         })
      }
 }
+
+
+exports.updateSection=async(req,res)=>{
+    try{
+        //data input
+        const {sectionName,sectionId}=req.body
+
+        //validation
+        if(!sectionName || !sectionId){
+            return res.status(400).json({
+                success:false,
+                message:"All Fields are required"
+            })
+        }
+
+        //update data
+        const section=await Section.findByIdAndUpdate({sectionId},{
+            sectionName
+        },{
+            new:true
+        })
+
+        //return response
+        return res.status(200).json({
+            success:true,
+            message:"Section Updated successfully",
+            updatedCourseDetails
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            success:false,
+            message:"Cannot create new Section",
+            error:err.message
+        })
+    }
+}
