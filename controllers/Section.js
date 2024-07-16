@@ -80,3 +80,23 @@ exports.updateSection=async(req,res)=>{
         })
     }
 }
+
+exports.deleteSection=async(req,res)=>{
+    try{
+        //get id -> id hum bahut jagah se le sakte h jaise req.body se, parameters se.
+        //Assuming that we are sending ID in params
+        const {sectionId}=req.params    
+
+        //use findByIDAndDelete
+        await Section.findByIdAndDelete(sectionId)
+
+        //return response
+        return res.status(200).json({
+            success:true,
+            message:"Section Deleted Successfully"
+        })
+    }
+    catch(err){
+
+    }
+}
