@@ -97,6 +97,10 @@ exports.deleteSection=async(req,res)=>{
         })
     }
     catch(err){
-
+        return res.status(500).json({
+            success:false,
+            message:"Cannot delete section",
+            error:err.message
+        })
     }
 }
