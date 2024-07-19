@@ -95,9 +95,14 @@ exports.capturePayment=async(req,res)=>{
         })
 
     }
+}
+ 
+//! in above handler function we initiated/created the payment with the help of creating the order
 
+//!Now we will verify the signature
 
+//verify signature of razorpay and server
+
+exports.verifySignature=async(req,res)=>{
     
-    
-
 }
