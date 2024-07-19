@@ -10,6 +10,9 @@ const bcrypt=require("bcrypt")
 const Profile=require("../models/Profile")
 const jwt=require('jsonwebtoken')
 require('dotenv').config()
+const mailSender=require("../utils/mailSender")
+const {passwordUpdated}=require("../mail/passwordUpdate")
+
 
 
 //! Send Otp for Sign in
