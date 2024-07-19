@@ -182,11 +182,11 @@ exports.verifySignature=async(req,res)=>{
     else{
         return res.status(400).json({
             success:false,
-            message:"Signature does not match"
+            message:"Signatures does not match",
         })
     }
     
-}
+} 
 
 
 
