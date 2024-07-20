@@ -70,24 +70,49 @@ exports.createRaing=async(req,res)=>{
 
 
  //todo : get average rating
-// exports.getAverageRating=async (req,res)=>{
-//     try{
-//         //get course id
-//         const courseId=req.body.courseId;
+exports.getAverageRating=async (req,res)=>{
+    try{
+        //get course id
+        const courseId=req.body.courseId;
 
-//         //calculate average rating
+        //calculate average rating
+        const result=await RatingAndReview.aggregate([
+            {
+                $match:{
+                    course:new mongoose.Types.ObjectId(courseId) // todo : ese course mereko find karke do jiski courseId is courseId ki tarah ho
 
+                }
+            },
+            {
+                $group:{
+                    _id:null, // jitne entry aaye the osko single group mein wrap kar diya,
+                    averageRating:{$avg:"$rating"}
+                }
+            }
+        ])
+        //return rating
+        if(result.length>0){
+            return res.status(200).json({
+                success:true,
+                averageRating:result[0].averageRating,
+                averageRating:0
+            })
+        }
 
-//         //return rating
-//     }
-//     catch(err){
-//         return res.status(500).json({
-//             success:false,
-//             message:err.message
-//         })
-//     }
+        //if no rating review exist
+        return result.status(200).json({
+            success:true,
+            message:"Average rating is 0, no rating given till now"
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            success:false,
+            message:err.message
+        })
+    }
 
-// }
+}
 
 
 //todo : get all rating
