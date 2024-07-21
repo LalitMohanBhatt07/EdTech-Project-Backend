@@ -3,6 +3,7 @@ const Category=require("../models/Category")
 const User = require("../models/User")
 const user=require("../models/User")
 const {uploadImageToClodinary}=require("../utils/imageUploder")
+const CourseProgress = require("../models/CourseProgress")
 require("dotenv").config()
 
 //create Course handler function
@@ -231,3 +232,69 @@ exports.editCourse=async(req,res)=>{
         })
     }
 }
+
+//get Full Course Detail : 
+exports.getFullCourseDetails=async(req,res)=>{
+    try{
+        const {courseId}=req.body
+        console.log("CourseId : ",courseId)
+        const userId=req.user.id
+        const courseDetails=await Course.findOne({
+            _id:courseId
+        }).populate({
+            path:"instructor",
+            populate:{
+                path:"additionalDetails"
+            }
+        })
+        .populate("category")
+        .populate("ratingAndReviews")
+        .populate({
+            path:"courseContent",
+            populate:{
+                path:"subSection"
+            }
+        })
+        .exec()
+
+        let courseProgressCount=await CourseProgress.findOne({
+            courseID:courseId,
+            userID:userId
+        })
+
+        console.log("Course Progress Count: ",courseProgressCount)
+
+        if(!courseDetails){
+            return res.status(400).json({
+                success:false,
+                message:`Could not find course with id : ${courseId}`
+            })
+        }
+
+        let totalDurationInSeconds=0
+        courseDetails.courseContent.forEach((content)=>{
+            content.subSection.forEach((subSection)=>{
+                const timeDurationInSeconds=parseInt(subSection.timeDuration)
+                totalDurationInSeconds+=timeDurationInSeconds
+            })
+        })
+
+        const totalDuration=convertSecondsToDuration(totalDurationInSeconds)
+
+        return res.status(200).json({
+            success:true,
+            data:{
+                courseDetails,
+                totalDuration,
+                completedVideos:courseProgressCount?.completedVideos?courseProgressCount?.completedVideos:[],
+            }
+        })
+        
+    }
+    catch(error){
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+          })
+        }
+    }
