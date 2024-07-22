@@ -103,7 +103,7 @@ exports.capturePayment=async(req,res)=>{
 
 //verify signature of razorpay and server
 
-exports.verifySignature=async(req,res)=>{
+exports.verifySignature=async(req,res)=>{// verifySignature
     //! we will compare the secret inside server and the secret send by razorpay with the help of webhook
     const webhookSecret="12345678"
     
