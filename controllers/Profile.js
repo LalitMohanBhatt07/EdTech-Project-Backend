@@ -1,5 +1,6 @@
 const Profile=require("../models/Profile")
 const User=require("../models/User")
+require("dotenv").config()
 
 //! hamne Auth controller mein ek demo Profile generate kari h .. to ab hame profile create karne ki nahi bas update karne ki jarurat h.. Dusra tarika vahi h ki hum is file me Profile create kare, update kare etc.
 
@@ -111,3 +112,39 @@ exports.getAllUserDetails=async(req,res)=>{
     }
 }
 
+exports.updateDisplayPicture=async(req,res)=>{
+try{
+    console.log("req : ",req)
+
+    const displayPicture=req.files.displayPicture
+    const userId=req.user.id
+    const image=await uploadImageToCloudinary(
+        displayPicture,
+        process.env.FOLDER_NAME,
+        1000,
+        1000
+    )
+    console.log(image)
+    const updatedProfile=await User.findByIdAndUpdate(
+        {_id:userId},
+        {
+            image:image.secure_url
+        },
+        {new:true}
+        )
+
+        res.status(200).json({
+            success:true,
+            message:'Image updated Successfully',
+            data:updatedProfile
+
+        })
+
+}
+catch(err){
+    return res.status(500).json({
+        success:false,
+        message:err.message
+    })
+}
+}
