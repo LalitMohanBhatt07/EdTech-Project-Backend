@@ -107,7 +107,7 @@ exports.signUp=async(req,res)=>{
     //check user already exist or not
     const existingUser=await User.findOne({email})
     if(existingUser){
-        res.status(400).json({
+        return res.status(400).json({
             success:false,
             message:"User is already Registered"
         })
@@ -126,8 +126,8 @@ exports.signUp=async(req,res)=>{
             message:"OTP not found"
         })
     } 
-    else if(otp!==recentOtp){
-        res.status(400).json({
+    else if(otp!==recentOtp[0].otp){
+        return res.status(400).json({
             success:false,
             message:"Invalid OTP ! OTP Not Matching"
         })
@@ -135,6 +135,8 @@ exports.signUp=async(req,res)=>{
 
     //Hash password
     const hashedPassword=await bcrypt.hash(password,10)
+
+    
 
     //entry create in Db
     const profileDetails=await Profile.create({
@@ -144,10 +146,20 @@ exports.signUp=async(req,res)=>{
         contactNumber:null
     })
 
-    const user=await User.create({firstName,lastName,email,contactNumber,password:hashedPassword,accountType,additionalDetails:profileDetails._id,//profileDetail ki id additionalDetail mein save kar denge
-    image:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName}%20${lastName}` // ye ek api h jiske ie dicebear jiske help se hum firstName, lastName ke first character ke help se profile icon bana sakte h like Lalit Bhatt ki LB
+    
 
-    }) 
+    const user=await User.create(
+        {firstName,
+            lastName,
+            additionalDetails:profileDetails._id,
+            email,
+            contactNumber,
+            password:hashedPassword,
+            accountType,
+            image:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName}%20${lastName}` // ye ek api h jiske ie dicebear jiske help se hum firstName, lastName ke first character ke help se profile icon bana sakte h like Lalit Bhatt ki LB
+
+    })
+
 
     //return response
     return res.status(200).json({
@@ -157,7 +169,7 @@ exports.signUp=async(req,res)=>{
     }
     catch(err){
         console.log(err)
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"user cannot be registered , Please Try again"
         })
@@ -181,7 +193,7 @@ exports.login=async(req,res)=>{
         }
 
         //user check exist or not
-        const user=await User.findOne({email}).populate("additionalDetails")
+        const user=await User.findOne({email})
         if(!user){
             return res.status(401).json({
                 success:false,
@@ -196,11 +208,15 @@ exports.login=async(req,res)=>{
             const payload={
                 email:user.email,
                 id:user._id,
-                role:user.accountType
+                accountType:user.accountType
             }
 
-            const token=jwt.sign(payload,process.env.JWT_SECRET,{
-                expiresIn:"2h"
+            const token=jwt.sign({
+                email:user.email,
+                id:user._id,
+                accountType:user.accountType
+            },process.env.JWT_SECRET,{
+                expiresIn:"24h"
         })
         user.token=token
         user.password=undefined;
@@ -281,7 +297,7 @@ exports.changePassword=async(req,res)=>{
     await sendVerificationEmail(user.email,'Your password has been successfully Changed')
 
     //return a successful response
-    res.status(200).json({
+    return res.status(200).json({
         success:true,
         message:"Password changed successfully"
     })
@@ -289,7 +305,7 @@ exports.changePassword=async(req,res)=>{
 
 }
 catch(err){
-    res.status(500).json({
+    return res.status(500).json({
         success:false,
         message:"Cannot change Password",err
     })

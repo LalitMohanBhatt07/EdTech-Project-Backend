@@ -4,6 +4,7 @@ require("dotenv").config()
 const {convertSecondsToDuration} =require("../utils/secToDuration")
 const courseProgress=require("../models/CourseProgress")
 const CourseProgress = require("../models/CourseProgress")
+const {uploadImageToClodinary}=require("../utils/imageUploder")
 
 //! hamne Auth controller mein ek demo Profile generate kari h .. to ab hame profile create karne ki nahi bas update karne ki jarurat h.. Dusra tarika vahi h ki hum is file me Profile create kare, update kare etc.
 
@@ -12,10 +13,12 @@ exports.updateProfile=async(req,res)=>{
         //todo -> during authentication middleware we have decoded the token and passed the decode to the req.user . so we can get userId from there
 
         //*get data
-        const {dateOfBirth="",about="",contactNumber,gender}=req.body
+        const {dateOfBirth,about,contactNumber,gender}=req.body
 
         //get userId
         const id=req.user.id
+        
+        
 
         //validation
         if(!contactNumber ||!gender ||!id){
@@ -27,7 +30,10 @@ exports.updateProfile=async(req,res)=>{
 
         //find profile
         const userDetails=await User.findById(id)
-        const profileId=userDetails.AdditionalDetails
+
+        console.log(userDetails)
+
+        const profileId=userDetails.additionalDetails
         const profileDetails=await Profile.findById(profileId)
 
         //update profile
@@ -102,7 +108,8 @@ exports.getAllUserDetails=async(req,res)=>{
         //return response
         return res.status(200).json({
             success:true,
-            message:"User data fetched successfully"
+            message:"User data fetched successfully",
+            data:userDetails
         })
 
     }
@@ -121,7 +128,7 @@ try{
 
     const displayPicture=req.files.displayPicture
     const userId=req.user.id
-    const image=await uploadImageToCloudinary(
+    const image=await uploadImageToClodinary(
         displayPicture,
         process.env.FOLDER_NAME,
         1000,

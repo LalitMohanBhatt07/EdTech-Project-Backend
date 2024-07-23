@@ -22,7 +22,7 @@ exports.resetPasswordToken=async(req,res)=>{
     const token=crypto.randomUUID()
 
     //update user by adding token and expiration time
-    const updatedDetails=await User.findByIdAndUpdate({email:email},{token:token,resetPasswordExpires:Date.now()+5*60*1000},{new:true}) //email ki help se search karo or token and resetPasswordExpires ki value update kar do. new:true ki help se jo updated response ki value return hote h
+    const updatedDetails=await User.findOneAndUpdate({email:email},{token:token,resetPasswordExpires:Date.now()+5*60*1000},{new:true}) //email ki help se search karo or token and resetPasswordExpires ki value update kar do. new:true ki help se jo updated response ki value return hote h
 
     //create url
     const url=`http://localhost:3000/update-password/${token}`
@@ -40,7 +40,8 @@ exports.resetPasswordToken=async(req,res)=>{
         console.log(err)
         res.status(500).json({
             success:false,
-            message:"Cannot send reset Password message"
+            message:"Cannot send reset Password message",
+            error:err.message
         })
     }
 }

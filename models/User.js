@@ -1,4 +1,5 @@
 const mongoose=require('mongoose')
+const Profile=require("../models/Profile")
 
 const userSchema=new mongoose.Schema({
     firstName :{
@@ -33,7 +34,8 @@ const userSchema=new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    AdditionalDetails:{ // iske andar hum user ki additonal details saave karenge like Male/female etc. jo Profile section mein use Hoga hamare UI mein
+    additionalDetails:
+    { // iske andar hum user ki additonal details saave karenge like Male/female etc. jo Profile section mein use Hoga hamare UI mein
         type:mongoose.Schema.Types.ObjectId,
         ref:"Profile"
     },

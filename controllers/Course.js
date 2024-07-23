@@ -20,7 +20,7 @@ exports.createCourse=async(req,res)=>{
 
         //validation
         if(!courseName || !courseDescription || !whatYouWillLearn ||!price ||!category ||!thumbnail){
-            res.status(400).json({
+            return res.status(400).json({
                 success:false,
                 message:'All Fields are mandatory'
             })
@@ -32,7 +32,7 @@ exports.createCourse=async(req,res)=>{
         console.log("Instuctor Details : ",instructorDetails)
 
         if(!instructorDetails){
-            res.status(404).json({
+            return res.status(404).json({
                 success:false,
                 message:"Instructor Details not found"
             })
@@ -40,9 +40,9 @@ exports.createCourse=async(req,res)=>{
 
         //check given category is valid or not
         // req ki body se jo category milega vo course.js model mein object reference form mein h to hame id milegi
-        const categoryDetails=Category.findById(category)// ye category id hoge 
+        const categoryDetails=await Category.findById(category)// ye category id hoge 
         if(!categoryDetails){
-            res.status(404).json({
+            return res.status(404).json({
                 success:false,
                 message:"Category Details not found"
             })
