@@ -77,7 +77,7 @@ exports.deleteAccount=async(req,res)=>{
         }
 
         //delete profile
-        await Profile.findByIdAndDelete({_id:userDetails.AdditionalDetails})
+        await Profile.findByIdAndDelete({_id:userDetails.additionalDetails})
 
         //delete user
         await User.findByIdAndDelete({_id:id})
@@ -92,6 +92,7 @@ exports.deleteAccount=async(req,res)=>{
         return res.status(500).json({
             success:false,
             message:"Cannot delete account",
+            error:err.message
             
         })
     }

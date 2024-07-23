@@ -9,11 +9,11 @@ exports.createSubSection=async(req,res)=>{
         const {sectionId,title,timeDuration,description}=req.body
 
         //extract video from file
-        const video=req.files.videoFile// here let file of video is videoFile
+        const videoFile=req.files.videoFile// here let file of video is videoFile
 
         //validation
         if(!sectionId ||!title ||!timeDuration ||!description){
-            res.status(400).json({
+            return res.status(400).json({
                 success:false,
                 message:"All fields are mandatory"
             })
@@ -47,6 +47,7 @@ exports.createSubSection=async(req,res)=>{
         })
     }
     catch(err){
+        console.error(err)
         return res.status(500).json({
             success:false,
             message:"Cannot create new Sub section",
