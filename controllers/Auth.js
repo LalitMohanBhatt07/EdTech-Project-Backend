@@ -112,13 +112,14 @@ exports.signUp=async(req,res)=>{
             message:"User is already Registered"
         })
     }
+    
 
     //finding most recent otp for the user
     const recentOtp=await OTP.find({email}).sort({createdAt:-1}).limit(1); // is query ki help se sirf recent otp fetch hogi
     console.log(recentOtp)
 
     //validate OTP
-    if(recentOtp.length==0){
+    if(recentOtp.length===0){
         //otp not found
         return res.status(400).json({
             success:false,

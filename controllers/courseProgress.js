@@ -3,7 +3,7 @@ const Section=require("../models/Section")
 const SubSection=require("../models/SubSection")
 const CourseProgress=require("../models/CourseProgress")
 const Course=require("../models/Course")
-const CourseProgress = require("../models/CourseProgress")
+
 
 //update course progress
 exports.updateCourseProgress=async(req,res)=>{

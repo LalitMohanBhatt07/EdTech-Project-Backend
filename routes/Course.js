@@ -50,7 +50,7 @@ const {
     isAdmin
 }=require("../middlewares/auth")
 
-const {updatedCourseProgress, updateCourseProgress}=require("../controllers/courseProgress")
+const {updateCourseProgress}=require("../controllers/courseProgress")
 
 
 // ********************************************************************************************************
@@ -70,7 +70,7 @@ router.post("/updateSection",auth,isInstructor,updateSection)
 router.post("/deleteSection",auth,isInstructor,deleteSection)
 
 //! Edit sub section
-router.post("/updateSubSection",auth,isInstructor,updateSection)
+router.post("/updateSubSection",auth,isInstructor,updateSubSection)
 
 //! Delete Sub Section
 router.post("/deleteSubSection",auth,isInstructor,deleteSubSection)

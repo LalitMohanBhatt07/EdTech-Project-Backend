@@ -7,7 +7,7 @@ const courseProgress=new mongoose.Schema({
     },
     userID:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
+        ref:"User"
     },
     completedVideos:[
         {

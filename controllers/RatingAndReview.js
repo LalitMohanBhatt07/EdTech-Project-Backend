@@ -2,7 +2,7 @@ const RatingAndReview=require("../models/RatingAndReview")
 const Course=require("../models/Course")
 
 //todo : create Rating
-exports.createRaing=async(req,res)=>{
+exports.createRating=async(req,res)=>{
     try{
         //get user id
         const userId=req.user.id //! auth wale middleware ke payload ke andar data h

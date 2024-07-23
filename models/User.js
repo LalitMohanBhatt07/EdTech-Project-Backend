@@ -25,9 +25,16 @@ const userSchema=new mongoose.Schema({
         enum:['Admin','Student','Instructor'],
         required:true
     },
+    active:{
+        type:Boolean,
+        default:true
+    },
+    approved:{
+        type:Boolean,
+        default:true
+    },
     AdditionalDetails:{ // iske andar hum user ki additonal details saave karenge like Male/female etc. jo Profile section mein use Hoga hamare UI mein
         type:mongoose.Schema.Types.ObjectId,
-        required:true,
         ref:"Profile"
     },
     courses:[
@@ -38,7 +45,7 @@ const userSchema=new mongoose.Schema({
     ],
     image:{
         type:String, 
-        required:true
+        
     },
     token:{
         type:String
@@ -54,4 +61,4 @@ const userSchema=new mongoose.Schema({
     ]
 })
 
-module.exports=mongoose.model("user",userSchema)
+module.exports=mongoose.model("User",userSchema)
